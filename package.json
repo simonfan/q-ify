@@ -1,7 +1,7 @@
 {
   "name": "q-ify",
   "main": "./src/q-ify",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Wrap node styled objects into q.",
   "repository": {
     "type": "git",
