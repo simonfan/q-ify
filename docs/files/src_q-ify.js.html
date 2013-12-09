@@ -104,32 +104,38 @@ var Q = require(&#x27;q&#x27;),
 	_ = require(&#x27;lodash&#x27;);
 
 /**
- * @class qify
- */
-
-
-/**
- * Create a promise-based version of a node.js
- * callback signature function. (denodeify or nfbind).
+ * Normalizes the methods hash.
  *
- * @method promisifyFunction
- * @param func {Function}
- * @param [context] {Object}
+ * @method normalizeMethodsHash
+ * @private
  */
-function promisifyFunction(func, context) {
-	return context ? Q.nbind(func, context) : Q.denodeify(func);
+function normalizeMethodsHash(methods) {
+	if (_.isArray(methods)) {
+
+		return _.object(methods, methods);
+
+	} else if (_.isString(methods)) {
+
+		var res = {};
+		res[methods] = methods;
+
+		return res;
+
+	} else {
+
+		return methods;
+	}
 }
 
 /**
+ * @class qify
+ */
+
+/**
  * Takes an object and returns a version of
- * it with promisified methods optionally bound to the
- * some context.
+ * it with promisified methods.
  *
  * @method promisifyObject
- *
- * @param object {Object|String}
- *     Object: it is the object whose methods will be promisified.
- *     String: the module which returns an object to be promisified.
  *
  * @param methods {Object|Array}
  *     Array: array of methodNames to be promisified.
@@ -137,47 +143,38 @@ function promisifyFunction(func, context) {
  *         of the original object to the ones in the promisified
  *         object.
  *
- * @param [context] {Object|Boolean}
- *     Object: the object to which bind promisified methods context
- *     Boolean: whether to bind methods to the object being promisified.
+ * @param object {Object|String}
+ *     Object: it is the object whose methods will be promisified.
+ *     String: the module which returns an object to be promisified.
  */
-function promisifyObject(object, methods, context) {
+function promisifyObject(object, methods) {
 
-	// setting default values
+	var methods = normalizeMethodsHash(methods),
+		res = Object.create(object);
 
-	// if context is Boolean and true,
-	// it is the object.
-	context = context === true ? object : context;
-
-	object = typeof object === &#x27;string&#x27; ? require(object) : object;
-
-	var res = Object.create(object);
-
-
-	if (_.isArray(methods)) {
-
-		methods.forEach(function (m) {
-			res[m] = promisifyFunction(object[m], context);
-		});
-
-	} else if (_.isObject(methods)) {
-		// methods: { to: from }
-
-		_.each(methods, function (from, to) {
-			res[to] = promisifyFunction(object[from], context);
-		});
-	}
+	// methods: { to: from }
+	_.each(methods, function (from, to) {
+		res[to] = Q.denodeify(object[from]);
+	});
 
 	return res;
 }
 
+
 /**
- * Takes a methods hash and either
- * [1] a builder function that returns an object
- * [2] an object to be used as base by Object.create
- * and returns a function that creates a promisified
- * version of either the object returned (1) or
- * object created (2).
+ * Requires the module and pass the returning object to qify.
+ */
+function promisifyModule(mod, methods) {
+	var object = require(mod);
+
+	return promisifyObject(object, methods);
+}
+
+/**
+ * Takes a factory function and wraps it
+ * with a function that runs the factory,
+ * promisifies the resulting object and returns
+ * the promisified version.
  *
  * @method factory
  *
@@ -190,90 +187,59 @@ function promisifyObject(object, methods, context) {
  *
  * @param methods {Array|Object}
  *     See @promisifyObject @param methods.
- *
- * @param context {Boolean|Object}
- *     Boolean: whether to bind the methods to the object
- *         created;
- *     Object: Context to which bind methods.
  */
-function factory(fac, methods, context) {
+function promisifyFactory(fac, methods) {
 
-	// context defaults to true.
-	context = typeof context === &#x27;undefined&#x27; ? true : context;
+	return function () {
+		// invoke the fac and create an instance
+		// of the object
+		var obj = fac.apply(null, arguments);
 
-	if (typeof fac === &#x27;object&#x27;) {
-		return function () {
-			var obj = Object.create(fac);
-
-			return promisifyObject(methods, obj, context);
-		};
-
-	} else if (typeof fac === &#x27;function&#x27;) {
-
-		return function () {
-			// invoke the fac and create an instance
-			// of the object
-			var obj = fac.apply(null, arguments);
-
-			console.log(methods);
-			console.log(obj);
-			console.log(context);
-
-			// promisify the methods on the given object
-			return promisifyObject(methods, obj, context);
-		};
-	}
+		// promisify the methods on the given object
+		return promisifyObject(obj, methods);
+	};
 }
 
 /**
  * Facade for either
- * promisifyObject or promisifyFunction
+ * promisifyObject or promisifyFactory
  *
  * @method qify
  *
  * - promisifyObject:
- * @param first {String|Object} Object
- * @param second {Array|Object} Methods
- * @param third {Object|Boolean} Context
+ * @param first {String|Object}
+ * @param methods {Array|Object}
  *
- * - promisifyFunction
- * @param first {Function} Function to be promisified
- * @param [second] {Object} Context
+ * - promisifyFactory
+ * @param first {Function}
+ * @param methods {Array|String}
+ *
+ * - promisifyModule:
+ * @param first {String}
+ * @param mehtods {Array|String|Object}
  */
-var qify = module.exports = function qify(first, second, third) {
+var qify = module.exports = function qify(first, methods) {
 
-	if (typeof first === &#x27;object&#x27;) {
+	if (typeof first === &#x27;string&#x27;) {
 
-		// object denodeify.
-		// first:
-		//     {Array} of methods
-		//     {Object} is a method map from -&gt; to
-		// second:
-		//     {String} module name
-		//     {Object} object to be q-ified
-		// third:
-		//     {Object} context to which methods should be bound
-		//     {Boolean} should the object be bound to itself?
+		return promisifyModule.apply(null, arguments);
+
+	} else if (typeof first === &#x27;object&#x27;) {
 
 		return promisifyObject.apply(null, arguments);
 
 	} else if (typeof first === &#x27;function&#x27;) {
 
-		// simple denodeify.
-		// first:
-		//     {Function} function to be denodeified
-		// second:
-		//     {Object} context
-		return promisifyFunction.apply(null, arguments);
+		return promisifyFactory.apply(null, arguments);
 	}
 };
 
 /**
  * Make methods directly available on the object returned by module.
  */
-qify.factory = factory;
-qify.promisifyObject = promisifyObject;
-qify.promisifyFunction = promisifyFunction;
+qify.object = promisifyObject;
+qify.factory = promisifyFactory;
+qify.module = promisifyModule;
 
     </pre>
 </div>

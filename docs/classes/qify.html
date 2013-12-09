@@ -92,7 +92,7 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/src_q-ify.js.html#l16"><code>src&#x2F;q-ify.js:16</code></a>
+            Defined in: <a href="../files/src_q-ify.js.html#l40"><code>src&#x2F;q-ify.js:40</code></a>
         </div>
     
 
@@ -142,8 +142,8 @@
                                 
                             </li>
                         
-                            <li class="index-item method">
-                                <a href="#method_promisifyFunction">promisifyFunction</a>
+                            <li class="index-item method private">
+                                <a href="#method_normalizeMethodsHash">normalizeMethodsHash</a>
 
                                 
                                 
@@ -202,12 +202,6 @@
                     
                 </li>
             
-                <li class="arg">
-                    
-                        <code>context</code>
-                    
-                </li>
-            
             </ul><span class="paren">)</span>
         </div>
     
@@ -237,7 +231,7 @@
             
         
         
-        <a href="../files/src_q-ify.js.html#l84"><code>src&#x2F;q-ify.js:84</code></a>
+        <a href="../files/src_q-ify.js.html#l83"><code>src&#x2F;q-ify.js:83</code></a>
         
         </p>
 
@@ -248,12 +242,10 @@
     </div>
 
     <div class="description">
-        <p>Takes a methods hash and either
-[1] a builder function that returns an object
-[2] an object to be used as base by Object.create
-and returns a function that creates a promisified
-version of either the object returned (1) or
-object created (2).</p>
+        <p>Takes a factory function and wraps it
+with a function that runs the factory,
+promisifies the resulting object and returns
+the promisified version.</p>
 
     </div>
 
@@ -299,24 +291,6 @@ Object: *experimental* use Object.create(fac)
                     
                 </li>
             
-                <li class="param">
-                    
-                        <code class="param-name">context</code>
-                        <span class="type">Boolean | Object</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <pre><code>Boolean: whether to bind the methods to the object
-    created;
-Object: Context to which bind methods.</code></pre>
-
-                    </div>
-
-                    
-                </li>
-            
             </ul>
         </div>
     
@@ -327,33 +301,19 @@ Object: Context to which bind methods.</code></pre>
 </div>
 
                 
-                    <div id="method_promisifyFunction" class="method item">
-    <h3 class="name"><code>promisifyFunction</code></h3>
+                    <div id="method_normalizeMethodsHash" class="method item private">
+    <h3 class="name"><code>normalizeMethodsHash</code></h3>
 
     
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>func</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[context]</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
+        <span class="paren">()</span>
     
 
     
 
     
 
+    
+        <span class="flag private">private</span>
     
 
     
@@ -375,7 +335,7 @@ Object: Context to which bind methods.</code></pre>
             
         
         
-        <a href="../files/src_q-ify.js.html#l21"><code>src&#x2F;q-ify.js:21</code></a>
+        <a href="../files/src_q-ify.js.html#l16"><code>src&#x2F;q-ify.js:16</code></a>
         
         </p>
 
@@ -386,50 +346,10 @@ Object: Context to which bind methods.</code></pre>
     </div>
 
     <div class="description">
-        <p>Create a promise-based version of a node.js
-callback signature function. (denodeify or nfbind).</p>
+        <p>Normalizes the methods hash.</p>
 
     </div>
 
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">func</code>
-                        <span class="type">Function</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                         
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[context]</code>
-                        <span class="type">Object</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                         
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
     
 
     
@@ -447,19 +367,13 @@ callback signature function. (denodeify or nfbind).</p>
             
                 <li class="arg">
                     
-                        <code>object</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
                         <code>methods</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code class="optional">[context]</code>
+                        <code>object</code>
                     
                 </li>
             
@@ -492,7 +406,7 @@ callback signature function. (denodeify or nfbind).</p>
             
         
         
-        <a href="../files/src_q-ify.js.html#l33"><code>src&#x2F;q-ify.js:33</code></a>
+        <a href="../files/src_q-ify.js.html#l44"><code>src&#x2F;q-ify.js:44</code></a>
         
         </p>
 
@@ -504,8 +418,7 @@ callback signature function. (denodeify or nfbind).</p>
 
     <div class="description">
         <p>Takes an object and returns a version of
-it with promisified methods optionally bound to the
-some context.</p>
+it with promisified methods.</p>
 
     </div>
 
@@ -514,23 +427,6 @@ some context.</p>
             <h4>Parameters:</h4>
 
             <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">object</code>
-                        <span class="type">Object | String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <pre><code>Object: it is the object whose methods will be promisified.
-String: the module which returns an object to be promisified.</code></pre>
-
-                    </div>
-
-                    
-                </li>
             
                 <li class="param">
                     
@@ -553,16 +449,15 @@ Object: hash in format to: from, mapping methods
             
                 <li class="param">
                     
-                        <code class="param-name optional">[context]</code>
-                        <span class="type">Object | Boolean</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                        <code class="param-name">object</code>
+                        <span class="type">Object | String</span>
                     
 
                     
 
                     <div class="param-description">
-                        <pre><code>Object: the object to which bind promisified methods context
-Boolean: whether to bind methods to the object being promisified.</code></pre>
+                        <pre><code>Object: it is the object whose methods will be promisified.
+String: the module which returns an object to be promisified.</code></pre>
 
                     </div>
 
@@ -598,13 +493,7 @@ Boolean: whether to bind methods to the object being promisified.</code></pre>
             
                 <li class="arg">
                     
-                        <code>second</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>third</code>
+                        <code>methods</code>
                     
                 </li>
             
@@ -616,7 +505,19 @@ Boolean: whether to bind methods to the object being promisified.</code></pre>
             
                 <li class="arg">
                     
-                        <code class="optional">[second]</code>
+                        <code>methods</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>first</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>mehtods</code>
                     
                 </li>
             
@@ -649,7 +550,7 @@ Boolean: whether to bind methods to the object being promisified.</code></pre>
             
         
         
-        <a href="../files/src_q-ify.js.html#l138"><code>src&#x2F;q-ify.js:138</code></a>
+        <a href="../files/src_q-ify.js.html#l113"><code>src&#x2F;q-ify.js:113</code></a>
         
         </p>
 
@@ -661,7 +562,7 @@ Boolean: whether to bind methods to the object being promisified.</code></pre>
 
     <div class="description">
         <p>Facade for either
-promisifyObject or promisifyFunction</p>
+promisifyObject or promisifyFactory</p>
 
     </div>
 
@@ -680,8 +581,7 @@ promisifyObject or promisifyFunction</p>
                     
 
                     <div class="param-description">
-                        <p>Object</p>
-
+                         
                     </div>
 
                     
@@ -689,32 +589,15 @@ promisifyObject or promisifyFunction</p>
             
                 <li class="param">
                     
-                        <code class="param-name">second</code>
+                        <code class="param-name">methods</code>
                         <span class="type">Array | Object</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>Methods</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">third</code>
-                        <span class="type">Object | Boolean</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>Context</p>
-<ul>
-<li>promisifyFunction</li>
+                        <ul>
+<li>promisifyFactory</li>
 </ul>
 
                     </div>
@@ -731,7 +614,24 @@ promisifyObject or promisifyFunction</p>
                     
 
                     <div class="param-description">
-                        <p>Function to be promisified</p>
+                         
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">methods</code>
+                        <span class="type">Array | String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <ul>
+<li>promisifyModule:</li>
+</ul>
 
                     </div>
 
@@ -740,16 +640,29 @@ promisifyObject or promisifyFunction</p>
             
                 <li class="param">
                     
-                        <code class="param-name optional">[second]</code>
-                        <span class="type">Object</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                        <code class="param-name">first</code>
+                        <span class="type">String</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>Context</p>
+                         
+                    </div>
 
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">mehtods</code>
+                        <span class="type">Array | String | Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                         
                     </div>
 
                     

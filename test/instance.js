@@ -1,87 +1,70 @@
-(function(name, factory) {
+'use strict';
 
-	var mod = typeof define !== 'function' ?
-		// node
-		'../src/q-ify' :
-		// browser
-		'q-ify',
-		// dependencies for the test
-		deps = [mod, 'should'];
+var should = require('should');
 
-	if (typeof define !== 'function') {
-		// node
-		factory.apply(null, deps.map(require));
-	} else {
-		// browser
-		define(deps, factory);
-	}
+var qify = require('../src/q-ify');
 
-})('test', function(qify, should) {
-	'use strict';
+var Q = require('q');
 
+describe('qify working with instance objects', function () {
+	beforeEach(function (done) {
 
-	var Q = require('q');
+		var Foo = process.Foo = function Foo(bar) {
+			this.bar = bar;
+		};
 
-	describe('qify working with instance objects', function () {
-		beforeEach(function (done) {
+		Foo.prototype.callbackBar = function callbackBar(succeed, cb) {
+			var bar = this.bar;
 
-			var Foo = process.Foo = function Foo(bar) {
-				this.bar = bar;
-			};
+			setTimeout(function() {
 
-			Foo.prototype.callbackBar = function callbackBar(succeed, cb) {
-				var bar = this.bar;
+				if (succeed) {
+					cb(null, bar);
+				} else {
+					cb('failure', bar);
+				}
 
-				setTimeout(function() {
+			}, 200);
+		};
 
-					if (succeed) {
-						cb(null, bar);
-					} else {
-						cb('failure', bar);
-					}
+		done();
+	});
 
-				}, 200);
-			};
+	it('pre test', function (done) {
+		var littleFoo = new process.Foo('little');
+
+		// check that the callback is working
+		littleFoo.callbackBar(true, function(err, bar) {
+
+			bar.should.eql('little');
 
 			done();
 		});
 
-		it('pre test', function (done) {
-			var littleFoo = new process.Foo('little');
+	});
 
-			// check that the callback is working
-			littleFoo.callbackBar(true, function(err, bar) {
+	it('should bind promise returning method to the object', function(done) {
+		var littleFoo = new process.Foo('little');
 
+		littleFoo = qify(littleFoo, ['callbackBar'], true);
+
+		var success = littleFoo
+			.callbackBar(true)
+			.done(function(bar) {
 				bar.should.eql('little');
+			})
 
-				done();
+		var failure = littleFoo
+			.callbackBar(false)
+			.done(function succeed(bar) {
+				// should never be called
+			}, function fail(err) {
+				err.should.ok;
 			});
 
-		});
-
-		it('should bind promise returning method to the object', function(done) {
-			var littleFoo = new process.Foo('little');
-
-			littleFoo = qify(['callbackBar'], littleFoo, littleFoo);
-
-			var success = littleFoo
-				.callbackBar(true)
-				.done(function(bar) {
-					bar.should.eql('little');
-				})
-
-			var failure = littleFoo
-				.callbackBar(false)
-				.done(function succeed(bar) {
-					// should never be called
-				}, function fail(err) {
-					err.should.ok;
-				});
-
-			Q.allSettled([success, failure])
-				.then(function() {
-					done();
-				})
-		});
+		Q.allSettled([success, failure])
+			.then(function() {
+				done();
+			})
 	});
 });
