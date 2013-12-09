@@ -27,7 +27,7 @@
             "namespaces": {},
             "tag": "module",
             "file": "src/q-ify.js",
-            "line": 16,
+            "line": 40,
             "description": "Create objects from wrapped functions"
         }
     },
@@ -43,54 +43,37 @@
             "module": "Qify",
             "namespace": "",
             "file": "src/q-ify.js",
-            "line": 16
+            "line": 40
         }
     },
     "classitems": [
         {
             "file": "src/q-ify.js",
-            "line": 21,
-            "description": "Create a promise-based version of a node.js\ncallback signature function. (denodeify or nfbind).",
+            "line": 16,
+            "description": "Normalizes the methods hash.",
             "itemtype": "method",
-            "name": "promisifyFunction",
-            "params": [
-                {
-                    "name": "func",
-                    "description": "",
-                    "type": "Function"
-                },
-                {
-                    "name": "context",
-                    "description": "",
-                    "type": "Object",
-                    "optional": true
-                }
-            ],
+            "name": "normalizeMethodsHash",
+            "access": "private",
+            "tagname": "",
             "class": "qify",
             "module": "Qify"
         },
         {
             "file": "src/q-ify.js",
-            "line": 33,
-            "description": "Takes an object and returns a version of\nit with promisified methods optionally bound to the\nsome context.",
+            "line": 44,
+            "description": "Takes an object and returns a version of\nit with promisified methods.",
             "itemtype": "method",
             "name": "promisifyObject",
             "params": [
-                {
-                    "name": "object",
-                    "description": "\n    Object: it is the object whose methods will be promisified.\n    String: the module which returns an object to be promisified.",
-                    "type": "Object|String"
-                },
                 {
                     "name": "methods",
                     "description": "\n    Array: array of methodNames to be promisified.\n    Object: hash in format to: from, mapping methods\n        of the original object to the ones in the promisified\n        object.",
                     "type": "Object|Array"
                 },
                 {
-                    "name": "context",
-                    "description": "\n    Object: the object to which bind promisified methods context\n    Boolean: whether to bind methods to the object being promisified.",
-                    "type": "Object|Boolean",
-                    "optional": true
+                    "name": "object",
+                    "description": "\n    Object: it is the object whose methods will be promisified.\n    String: the module which returns an object to be promisified.",
+                    "type": "Object|String"
                 }
             ],
             "class": "qify",
@@ -98,8 +81,15 @@
         },
         {
             "file": "src/q-ify.js",
-            "line": 84,
-            "description": "Takes a methods hash and either\n[1] a builder function that returns an object\n[2] an object to be used as base by Object.create\nand returns a function that creates a promisified\nversion of either the object returned (1) or\nobject created (2).",
+            "line": 74,
+            "description": "Requires the module and pass the returning object to qify.",
+            "class": "qify",
+            "module": "Qify"
+        },
+        {
+            "file": "src/q-ify.js",
+            "line": 83,
+            "description": "Takes a factory function and wraps it\nwith a function that runs the factory,\npromisifies the resulting object and returns\nthe promisified version.",
             "itemtype": "method",
             "name": "factory",
             "params": [
@@ -112,11 +102,6 @@
                     "name": "methods",
                     "description": "\n    See @promisifyObject @param methods.",
                     "type": "Array|Object"
-                },
-                {
-                    "name": "context",
-                    "description": "\n    Boolean: whether to bind the methods to the object\n        created;\n    Object: Context to which bind methods.",
-                    "type": "Boolean|Object"
                 }
             ],
             "class": "qify",
@@ -124,36 +109,40 @@
         },
         {
             "file": "src/q-ify.js",
-            "line": 138,
-            "description": "Facade for either\npromisifyObject or promisifyFunction",
+            "line": 113,
+            "description": "Facade for either\npromisifyObject or promisifyFactory",
             "itemtype": "method",
             "name": "qify\n\n- promisifyObject:",
             "params": [
                 {
                     "name": "first",
-                    "description": "Object",
+                    "description": "",
                     "type": "String|Object"
                 },
                 {
-                    "name": "second",
-                    "description": "Methods",
+                    "name": "methods",
+                    "description": "\n\n- promisifyFactory",
                     "type": "Array|Object"
                 },
                 {
-                    "name": "third",
-                    "description": "Context\n\n- promisifyFunction",
-                    "type": "Object|Boolean"
-                },
-                {
                     "name": "first",
-                    "description": "Function to be promisified",
+                    "description": "",
                     "type": "Function"
                 },
                 {
-                    "name": "second",
-                    "description": "Context",
-                    "type": "Object",
-                    "optional": true
+                    "name": "methods",
+                    "description": "\n\n- promisifyModule:",
+                    "type": "Array|String"
+                },
+                {
+                    "name": "first",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "mehtods",
+                    "description": "",
+                    "type": "Array|String|Object"
                 }
             ],
             "class": "qify",
@@ -161,7 +150,7 @@
         },
         {
             "file": "src/q-ify.js",
-            "line": 181,
+            "line": 147,
             "description": "Make methods directly available on the object returned by module.",
             "class": "qify",
             "module": "Qify"
@@ -169,8 +158,12 @@
     ],
     "warnings": [
         {
+            "message": "Missing item type\nRequires the module and pass the returning object to qify.",
+            "line": " src/q-ify.js:74"
+        },
+        {
             "message": "Missing item type\nMake methods directly available on the object returned by module.",
-            "line": " src/q-ify.js:181"
+            "line": " src/q-ify.js:147"
         }
     ]
 }
